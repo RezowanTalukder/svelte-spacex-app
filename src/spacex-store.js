@@ -1,11 +1,13 @@
 import { writable } from 'svelte/store';
 
 export const launches = writable([]);
-let loaded = false;
+export const companies = writable([]);
+let launchLoaded = false;
+let companyLoaded = false;
 
 
 export const getLaunches = async () => {
-	if (loaded) return;
+	if (launchLoaded) return;
 	const resLaunches = await fetch('https://api.spacexdata.com/v4/launches');
 	const launchesData = await resLaunches.json();
 	if (resLaunches.status !== 200) {
@@ -28,5 +30,30 @@ export const getLaunches = async () => {
 		};
 	});
 	launches.set(loadedLaunches);
-	loaded = true;
+	launchLoaded = true;
+}
+
+
+export const getCompanies = async () => {
+	if (companyLoaded) return;
+	const resCompanies = await fetch('https://api.spacexdata.com/v4/company');
+	const companyData = await resCompanies.json();
+	if (resCompanies.status !== 200) {
+		return {
+			message: 'Error Getting Company Info',
+		};
+	}
+	var companyInfo = {
+		name: companyData.name,
+		summary: companyData.summary,
+		address: companyData.headquarters.address,
+		city: companyData.headquarters.city,
+		state: companyData.headquarters.state,
+		website: companyData.links.website,
+		twitter: companyData.links.twitter,
+		elon_twitter: companyData.links.elon_twitter
+	}
+	// @ts-ignore
+	companies.set(companyInfo);
+	companyLoaded = true;
 }

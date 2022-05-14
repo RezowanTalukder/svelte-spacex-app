@@ -2,7 +2,7 @@
 </script>
 
 <svelte:head>
-	<title>Home Page</title>
+	<title>Index</title>
 </svelte:head>
 
-<h1>Home page</h1>
+<h1>SVELTE SPACE-X PROJECT</h1>

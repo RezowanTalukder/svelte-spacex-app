@@ -14,8 +14,6 @@
 			filteredLaunch = [...$launches];
 		}
 	}
-
-	getLaunches();
 </script>
 
 <svelte:head>
