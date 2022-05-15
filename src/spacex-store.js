@@ -2,9 +2,11 @@ import { writable } from 'svelte/store';
 
 export const launches = writable([]);
 export const companies = writable([]);
+export const launchpads = writable([]);
 let launchLoaded = false;
+let launchpadsLoaded = false;
 let companyLoaded = false;
-
+const launchpadDetails = {};
 
 export const getLaunches = async () => {
 	if (launchLoaded) return;
@@ -56,4 +58,55 @@ export const getCompanies = async () => {
 	// @ts-ignore
 	companies.set(companyInfo);
 	companyLoaded = true;
+}
+
+
+export const getLaunchPads = async () => {
+	if (launchpadsLoaded) return;
+	const resLaunchPads = await fetch('https://api.spacexdata.com/v4/launchpads');
+	const launchPadData = await resLaunchPads.json();
+	if (resLaunchPads.status !== 200) {
+		return {
+			message: 'Error Getting Company Info',
+		};
+	}
+	let loadedLaunchepads = launchPadData.map((launchpad) => {
+		return {
+			id: launchpad.id,
+			name: launchpad.name,
+			full_name: launchpad.full_name,
+			region: launchpad.region,
+			status: launchpad.status
+		}
+	});
+	// @ts-ignore
+	launchpads.set(loadedLaunchepads);
+	launchpadsLoaded = true;
+}
+
+
+export const getLaunchpadByID = async (id) => {
+
+	if (launchpadDetails[id]) {
+		return {
+			name: launchpadDetails[id].name,
+			latitude: launchpadDetails[id].latitude,
+			longitude: launchpadDetails[id].longitude,
+		};
+	}
+
+	try {
+		const url = `https://api.spacexdata.com/v4/launchpads/${id}`;
+		const res = await fetch(url);
+		const data = await res.json();
+		launchpadDetails[id] = data;
+		return {
+			name: data.name,
+			latitude: data.latitude,
+			longitude: data.longitude,
+		};
+	} catch (err) {
+		console.error(err);
+		return null;
+	}
 }

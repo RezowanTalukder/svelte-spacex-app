@@ -1,18 +1,22 @@
 <script>
 	import LaunchPads from '../components/LaunchPads.svelte';
+	import { launchpads, getLaunchPads } from '../spacex-store';
+	var resultlaunchpad = [];
+	getLaunchPads();
+
+	$: {
+		resultlaunchpad = [...$launchpads];
+	}
 </script>
 
 <svelte:head>
 	<title>Launch Pads</title>
-	<script
-		defer
-		async
-		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBi5ftCsmbv6mIcLaAeMcLJEgxRdsfRBcE&callback=initMap">
-	</script>
 </svelte:head>
 
-<h1 class="text-4xl text-center my-8 uppercase">Launch Pads Locations</h1>
+<h5 class="text-2xl text-center my-8 uppercase">Click on Launchpads to see its Locations</h5>
 
-<div>
-	<LaunchPads />
+<div class="py-4 grid gap-4 md:grid-cols-2 grid-cols-1">
+	{#each resultlaunchpad as launch_pad}
+		<LaunchPads {launch_pad} />
+	{/each}
 </div>
